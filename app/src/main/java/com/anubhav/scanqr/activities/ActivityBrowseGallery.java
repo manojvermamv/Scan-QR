@@ -58,8 +58,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 public class ActivityBrowseGallery extends AppCompatActivity implements View.OnClickListener,
-        BSImagePicker.OnSingleImageSelectedListener,
-        UCropFragmentCallback {
+        BSImagePicker.OnSingleImageSelectedListener, UCropFragmentCallback {
     private Context svContext;
     public static Uri imageUri = null;
     private TextView dialogCancel;

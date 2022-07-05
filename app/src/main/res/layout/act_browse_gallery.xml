@@ -21,21 +21,18 @@
             android:id="@+id/txt_uploadhead"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="5dp"
-            android:layout_marginEnd="5dp"
-            android:background="@drawable/back_cardview"
-            android:backgroundTint="@color/colorAccentDark"
+            android:layout_margin="@dimen/five"
             android:gravity="center"
             android:padding="@dimen/seven"
             android:text="@string/select_image_head"
-            android:textColor="@color/white"
+            android:textColor="@color/black"
             android:textSize="@dimen/ts_seventeen"
             android:visibility="visible" />
 
         <LinearLayout
             android:id="@+id/lay_btn"
             android:layout_width="match_parent"
-            android:layout_height="140dp"
+            android:layout_height="145dp"
             android:layout_below="@+id/txt_uploadhead"
             android:orientation="horizontal"
             android:weightSum="2">
@@ -44,7 +41,7 @@
                 android:id="@+id/dialog_fromgallery"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_margin="5dp"
+                android:layout_margin="10dp"
                 android:layout_weight="1"
                 android:background="@drawable/back_cardview"
                 android:backgroundTint="#585da7"
@@ -52,8 +49,8 @@
 
                 <ImageView
                     android:id="@+id/img_gallery"
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
                     android:layout_alignParentTop="true"
                     android:layout_centerHorizontal="true"
                     android:padding="10dp"
@@ -80,7 +77,7 @@
                 android:id="@+id/dialog_fromcamera"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_margin="5dp"
+                android:layout_margin="10dp"
                 android:layout_weight="1"
                 android:background="@drawable/back_cardview"
                 android:backgroundTint="#a8cf45"
@@ -88,8 +85,8 @@
 
                 <ImageView
                     android:id="@+id/img_gallery2"
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
                     android:layout_alignParentTop="true"
                     android:layout_centerHorizontal="true"
                     android:padding="10dp"
@@ -115,7 +112,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/lay_btn"
-            android:layout_margin="5dp"
+            android:layout_margin="10dp"
+            android:backgroundTint="#FFB74D"
             android:text="@string/label_cancel"
             android:textColor="@color/white"
             android:textSize="@dimen/ts_eighteen" />

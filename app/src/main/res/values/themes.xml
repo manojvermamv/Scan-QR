@@ -179,6 +179,12 @@
         <item name="android:background">@drawable/back_notification_action_background</item>
     </style>
 
+    <style name="DrawerItemTextAppearance" parent="@style/TextAppearance.MaterialComponents.Subtitle2">
+        <item name="android:textSize">15sp</item>
+        <item name="fontFamily">@font/josefin_regular</item>
+        <item name="android:fontFamily">@font/josefin_regular</item>
+    </style>
+
     <style name="CustomButtonTextAppearance" parent="TextAppearance.AppCompat.Widget.Button">
         <item name="android:textColor">@drawable/button_text_selector</item>
         <item name="android:textSize">16sp</item>

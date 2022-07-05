@@ -77,8 +77,6 @@ public class MainActivity extends BaseActivity<ActMainBinding> implements View.O
     }
 
     public void onResumeAdminApp() {
-        //UpdatePasswordActivity.startActivity(MainActivity.this, UpdatePasswordActivity.EXTRA_SET_NEW_PASSWORD, 121);
-
         View navigationHeader = binding.navView.getHeaderView(0);
         FontUtils.setFont(context, (ViewGroup) navigationHeader);
 
@@ -181,7 +179,7 @@ public class MainActivity extends BaseActivity<ActMainBinding> implements View.O
             // Initializing the QR Encoder with your value to be encoded, type you required and Dimension
             QRGEncoder qrgEncoder = new QRGEncoder(inputValue, null, QRGContents.Type.TEXT, getSmallerDimen());
             qrgEncoder.setColorBlack(Color.BLACK);
-            qrgEncoder.setColorWhite(Color.TRANSPARENT);
+            qrgEncoder.setColorWhite(Color.WHITE);
             try {
                 // Getting QR-Code as Bitmap
                 Bitmap bitmap = qrgEncoder.getBitmap();
@@ -193,6 +191,8 @@ public class MainActivity extends BaseActivity<ActMainBinding> implements View.O
                 e.printStackTrace();
                 SetQrToImageView(null);
             }
+        } else {
+            customToast.showToast("Storage permission required!", CustomToast.ToastyError);
         }
     }
 

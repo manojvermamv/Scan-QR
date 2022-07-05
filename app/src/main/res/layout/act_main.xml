@@ -80,7 +80,8 @@
                                         <ImageView
                                             android:id="@+id/qrImage"
                                             android:layout_width="match_parent"
-                                            android:layout_height="match_parent" />
+                                            android:layout_height="match_parent"
+                                            android:padding="5dp" />
 
                                         <TextView
                                             android:id="@+id/qrText"
@@ -197,8 +198,9 @@
             android:background="@color/drawer_back_lightcolor"
             android:fitsSystemWindows="true"
             android:focusableInTouchMode="true"
-            android:visibility="gone"
+            android:visibility="visible"
             app:headerLayout="@layout/back_nav_drawer_header"
+            app:itemTextAppearance="@style/DrawerItemTextAppearance"
             app:itemTextColor="@color/drawer_fontcolortv"
             app:menu="@menu/main_drawer" />
 

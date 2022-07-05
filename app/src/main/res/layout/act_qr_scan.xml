@@ -61,13 +61,13 @@
 
                 <ImageView
                     android:id="@+id/image_scan"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_width="52dp"
+                    android:layout_height="52dp"
+                    android:layout_gravity="center"
                     android:layout_marginLeft="@dimen/twenty"
                     android:layout_marginTop="@dimen/twenty"
                     android:layout_marginRight="@dimen/twenty"
                     android:layout_marginBottom="@dimen/ten"
-                    android:gravity="center"
                     android:src="@drawable/ic_browse_gallery"
                     android:textColor="@color/white"
                     android:textSize="@dimen/ts_twenty" />
