@@ -78,7 +78,6 @@ public class QrScanActivity extends BaseActivity<ActQrScanBinding> implements Vi
 
         binding.browseQrcode.setOnClickListener(view -> {
             ActivityBrowseGallery.OpenBrowseActivity(context);
-
             //mCodeScanner = ActivityBrowseProfileImage.imageUri;
             //mCodeScanner.setImageURI(null);
             //mCodeScanner.setImageURI(ActivityBrowseProfileImage.imageUri);
