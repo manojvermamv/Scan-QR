@@ -1,0 +1,56 @@
+{
+  "project_info": {
+    "project_number": "757024137844",
+    "firebase_url": "https://trackx-8ffac-default-rtdb.firebaseio.com",
+    "project_id": "trackx-8ffac",
+    "storage_bucket": "trackx-8ffac.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:757024137844:android:ecb3eb797bc23ab57b2721",
+        "android_client_info": {
+          "package_name": "com.anubhav.scanqr"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "757024137844-8ca4n87uj15giud16u6kpgp15agemtdf.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.anubhav.scanqr",
+            "certificate_hash": "23a332c403b1020c13275941633dbe191b0f588d"
+          }
+        },
+        {
+          "client_id": "757024137844-gn76275r44o7dhagvtl3fi3vt6sjukrf.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.anubhav.scanqr",
+            "certificate_hash": "787d9ebd8b11213525e6bdd818f718ecee246dd0"
+          }
+        },
+        {
+          "client_id": "757024137844-ob6phrr8g8kppqsfkafl136uh43mvhr4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCu0Rnzud5yyIpDqrwKbYABMt42ScYO9lQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "757024137844-ob6phrr8g8kppqsfkafl136uh43mvhr4.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
