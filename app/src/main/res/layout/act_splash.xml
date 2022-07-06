@@ -73,7 +73,7 @@
                 android:layout_marginBottom="@dimen/twenty"
                 android:gravity="center"
                 android:orientation="horizontal"
-                android:src="@drawable/logo"
+                android:src="@mipmap/ic_launcher"
                 android:visibility="gone">
 
                 <TextView

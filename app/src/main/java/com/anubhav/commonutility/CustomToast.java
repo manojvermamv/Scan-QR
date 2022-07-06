@@ -124,7 +124,7 @@ public class CustomToast {
                         Toasty.normal(context, string, Toast.LENGTH_LONG).show();
                         break;
                     case ToastyNormalWithIcon:
-                        Drawable icon = ContextCompat.getDrawable(context, R.drawable.logo);
+                        Drawable icon = ContextCompat.getDrawable(context, R.mipmap.ic_launcher);
                         Toasty.normal(context, string, icon).show();
                         break;
                     default:
@@ -146,7 +146,7 @@ public class CustomToast {
         toastText.setText(msg);
 
         ImageView toastImage = (ImageView) toastLayout.findViewById(R.id.toast_Image_view);
-        toastImage.setImageResource(R.drawable.logo);
+        toastImage.setImageResource(R.mipmap.ic_launcher);
         toastImage.setVisibility(View.GONE);
 
         Toast toast = new Toast(context);

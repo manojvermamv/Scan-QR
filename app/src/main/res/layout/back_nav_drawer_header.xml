@@ -22,7 +22,7 @@
             android:layout_height="72dp"
             android:layout_centerHorizontal="true"
             android:layout_gravity="center"
-            android:src="@drawable/logo" />
+            android:src="@mipmap/ic_launcher" />
 
         <TextView
             android:id="@+id/menuheader_name"

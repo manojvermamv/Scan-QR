@@ -206,7 +206,7 @@ public class ImageLoading {
         Glide.with(context)
 //                .load(Base64.decode(base64ImageString, Base64.DEFAULT))
                 .load(DecodeImageToByte(context, base64ImageString))
-//                .placeholder(R.drawable.logo_icon)
+//                .placeholder(R.mipmap.ic_launcher)
                 .into(imgView);
     }
 

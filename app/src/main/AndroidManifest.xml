@@ -3,13 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.anubhav.scanqr">
 
-    <queries>
-        <intent>
-            <action android:name="android.intent.action.MAIN" />
-            <category android:name="android.intent.category.LAUNCHER" />
-        </intent>
-    </queries>
-
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CAMERA" />
@@ -36,10 +29,10 @@
     <application
         android:name="com.anubhav.scanqr.MyApp"
         android:allowBackup="false"
-        android:icon="@drawable/logo"
+        android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:requestLegacyExternalStorage="true"
-        android:roundIcon="@drawable/logo"
+        android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
@@ -81,14 +74,14 @@
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
 
         <activity
-            android:name="com.anubhav.commonutility.spinner.ActivitySpinner"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
-
-        <activity
             android:name="com.anubhav.scanqr.activities.ActivityBrowseGallery"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.Transparent.DimEnabled"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
+
+        <activity
+            android:name="com.anubhav.commonutility.spinner.ActivitySpinner"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
 
         <provider

@@ -19,7 +19,7 @@
             android:contentDescription="@string/app_name"
             android:rotation="180"
             android:singleLine="true"
-            android:src="@mipmap/ic_arrow_right"
+            android:src="@drawable/ic_back_arrow_round_24"
             app:tint="@color/actionbarimagetintcolor" />
 
         <View
