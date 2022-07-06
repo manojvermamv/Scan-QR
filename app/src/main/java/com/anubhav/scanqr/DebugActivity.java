@@ -86,7 +86,6 @@ public class DebugActivity extends Activity {
         });
 
         bld.create().show();
-
     }
 
 }
