@@ -1,6 +1,7 @@
 package com.anubhav.scanqr.database.model;
 
 import android.net.Uri;
+import android.util.Log;
 
 import java.io.File;
 
@@ -68,6 +69,10 @@ public class CustomFile {
     @Override
     public String toString() {
         return getUri().toString() + " " + getPath() + " " + getFile();
+    }
+
+    public void print() {
+        Log.e(CustomFile.class.getSimpleName(), uri.toString() + " " + path + " " + file);
     }
 
 }

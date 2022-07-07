@@ -148,13 +148,28 @@ public class GlobalData {
         }
     }
 
-    public static void openAppStore(Context context, String packageName) {
+    public static void openAppStore(Context context) {
         try {
-            context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + packageName)));
+            Uri uri = Uri.parse("market://details?id=" + context.getPackageName());
+            Intent storeIntent = new Intent(Intent.ACTION_VIEW, uri);
+            // To count with Play market backstack, After pressing back button,
+            // to taken back to our application, we need to add following flags to intent.
+            storeIntent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY |
+                    Intent.FLAG_ACTIVITY_NEW_DOCUMENT |
+                    Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
+            context.startActivity(storeIntent);
         } catch (ActivityNotFoundException e) {
             e.printStackTrace();
-            context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + packageName)));
+            context.startActivity(new Intent(Intent.ACTION_VIEW,
+                    Uri.parse("http://play.google.com/store/apps/details?id=" + context.getPackageName())));
         }
+    }
+
+    public static void openAppStoreDeveloper(Context context) {
+        String devId = "7809285959465313029";
+        Uri uri = Uri.parse("https://play.google.com/store/apps/dev?id=" + devId);
+        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+        context.startActivity(intent);
     }
 
     public static String removeFirstCountChar(String word, int count) {
@@ -435,6 +450,19 @@ public class GlobalData {
         i.setPackage("com.bsb.hike");
         //i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(i, null);
+    }
+
+    public static void openWebPage(Context context, String urlString) {
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(urlString));
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.setPackage("com.android.chrome");
+        try {
+            context.startActivity(intent);
+        } catch (ActivityNotFoundException ex) {
+            // Chrome browser presumably not installed so allow user to choose instead
+            intent.setPackage(null);
+            context.startActivity(intent);
+        }
     }
 
     public static String getStringRes(Context aContext, int strId) {

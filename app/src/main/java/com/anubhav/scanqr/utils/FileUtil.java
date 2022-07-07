@@ -32,6 +32,7 @@ import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
 import android.webkit.MimeTypeMap;
+import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.core.content.FileProvider;
@@ -94,7 +95,11 @@ public class FileUtil {
 
     public static String getFileName(String ext) {
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
-        return "File_" + timeStamp + "." + ext;
+        if (TextUtils.isEmpty(ext)) {
+            return "File_" + timeStamp;
+        } else {
+            return "File_" + timeStamp + "." + ext;
+        }
     }
 
     public static String getAppDir(Context context) {
@@ -155,6 +160,10 @@ public class FileUtil {
             String mimeType = "";
             String dirName = Environment.getExternalStorageDirectory().getAbsolutePath();
             Uri storeUri = null;
+
+            if (!dirName.endsWith(File.separator)) {
+                dirName += File.separator;
+            }
 
             if (mediaType == MediaType.Image) {
                 mimeType = "image/jpg";
@@ -311,6 +320,16 @@ public class FileUtil {
         return intent;
     }
 
+    public static Intent getIntentForFile(Context mContext, Uri uri) {
+        if (uri == null) return null;
+        Intent intent = new Intent();
+        intent.setAction(Intent.ACTION_VIEW);
+        intent.putExtra(Intent.EXTRA_STREAM, uri);
+        intent.setDataAndType(uri, getMimeType(mContext, uri));
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        return intent;
+    }
+
     /**
      * @param fileName fileName must have with extension
      * @return MimeType of the file
@@ -329,6 +348,19 @@ public class FileUtil {
             type = "*/*";
         }
         return type;
+    }
+
+    public static String getMimeType(Context context, Uri uri) {
+        String mimeType = null;
+        if (ContentResolver.SCHEME_CONTENT.equals(uri.getScheme())) {
+            ContentResolver cr = context.getContentResolver();
+            mimeType = cr.getType(uri);
+        } else {
+            String fileExtension = MimeTypeMap.getFileExtensionFromUrl(uri.toString());
+            mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(
+                    fileExtension.toLowerCase());
+        }
+        return mimeType;
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -944,7 +976,7 @@ public class FileUtil {
         return BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
     }
 
-    public static void saveBitmapToFile(Context context, Bitmap bitmap) {
+    public static String saveBitmapToFile(Context context, Bitmap bitmap) {
         String savedFilePath = "";
         try {
             Uri finalUri;
@@ -959,6 +991,7 @@ public class FileUtil {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 values.put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_PICTURES + "/" + getAppDir(context));
                 values.put(MediaStore.Images.Media.IS_PENDING, 0);
+
                 savedFilePath = Environment.DIRECTORY_PICTURES + "/" + getAppDir(context) + fileName;
             } else {
                 File createDir = new File(Environment.getExternalStorageDirectory(), getAppDir(context));
@@ -980,6 +1013,7 @@ public class FileUtil {
             Log.d(TAG, e.toString());
             CustomToast.showCustomToast(context, e.toString(), CustomToast.ToastyError);
         }
+        return savedFilePath;
     }
 
     public static void saveBitmapToFile(Bitmap bitmap, String destPath) {

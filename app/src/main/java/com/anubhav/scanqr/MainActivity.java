@@ -7,10 +7,16 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Point;
+import android.media.MediaScannerConnection;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Display;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,14 +24,20 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 
 import androidx.annotation.Nullable;
+import androidx.core.content.FileProvider;
 import androidx.core.view.GravityCompat;
 
 import com.anubhav.commonutility.CustomToast;
+import com.anubhav.commonutility.MyCache;
 import com.anubhav.commonutility.customfont.FontUtils;
 import com.anubhav.scanqr.databinding.ActMainBinding;
+import com.anubhav.scanqr.utils.FileUtil;
+import com.anubhav.scanqr.utils.GlobalData;
+import com.anubhav.scanqr.utils.Utils;
 import com.google.android.material.navigation.NavigationView;
 import com.manoj.github.permissions.PermissionHandler;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import androidmads.library.qrgenearator.QRGContents;
@@ -55,11 +67,11 @@ public class MainActivity extends BaseActivity<ActMainBinding> implements View.O
         //GlobalData.setStatusBarFullScreen(this);
         //GlobalData.setLightStatusBar(this);
 
-        onCreateAdminApp();
-        onResumeAdminApp();
+        onCreateApp();
+        onResumeApp();
     }
 
-    private void onCreateAdminApp() {
+    private void onCreateApp() {
         // action bar initialization
         initActionBarMain();
 
@@ -76,7 +88,7 @@ public class MainActivity extends BaseActivity<ActMainBinding> implements View.O
         });
     }
 
-    public void onResumeAdminApp() {
+    public void onResumeApp() {
         View navigationHeader = binding.navView.getHeaderView(0);
         FontUtils.setFont(context, (ViewGroup) navigationHeader);
 
@@ -102,6 +114,7 @@ public class MainActivity extends BaseActivity<ActMainBinding> implements View.O
 
         binding.btnGenerate.setOnClickListener(v -> GenerateQrProcess());
         binding.btnShare.setOnClickListener(v -> ShareQrProcess());
+        binding.btnClearqr.setOnClickListener(v -> SetQrToImageView(null));
 
         SetQrToImageView(null);
     }
@@ -113,11 +126,11 @@ public class MainActivity extends BaseActivity<ActMainBinding> implements View.O
         if (id == R.id.nav_favorites) {
 
         } else if (id == R.id.nav_other_apps) {
-
+            GlobalData.openAppStoreDeveloper(context);
         } else if (id == R.id.nav_rate_app) {
-
+            GlobalData.openAppStore(context);
         } else if (id == R.id.nav_about) {
-
+            GlobalData.openAppStoreDeveloper(context);
         }
         binding.rootView.closeDrawer(GravityCompat.START);
         return true;
@@ -189,6 +202,7 @@ public class MainActivity extends BaseActivity<ActMainBinding> implements View.O
 
             } catch (Exception e) {
                 e.printStackTrace();
+                customToast.showToast("Error", CustomToast.ToastyError);
                 SetQrToImageView(null);
             }
         } else {
@@ -199,11 +213,13 @@ public class MainActivity extends BaseActivity<ActMainBinding> implements View.O
     private void SetQrToImageView(Bitmap bitmap) {
         qrBitmap = bitmap;
         if (qrBitmap == null) {
+            binding.btnClearqr.setVisibility(View.GONE);
             binding.qrImage.setVisibility(View.GONE);
             binding.qrText.setVisibility(View.VISIBLE);
 
         } else {
             binding.qrText.setVisibility(View.GONE);
+            binding.btnClearqr.setVisibility(View.VISIBLE);
             binding.qrImage.setVisibility(View.VISIBLE);
             binding.qrImage.setImageBitmap(qrBitmap);
         }
@@ -218,9 +234,50 @@ public class MainActivity extends BaseActivity<ActMainBinding> implements View.O
             return;
         }
 
+        String fileName = FileUtil.getFileName("jpg");
+        String destinationDir = Environment.getExternalStorageDirectory() + "/" + Environment.DIRECTORY_PICTURES + "/" + context.getString(R.string.app_name) + "/";
+        File file = new File(destinationDir, fileName);
+
         // Save with location, value, bitmap returned and type of Image(JPG/PNG).
-        QRGSaver qrgSaver = new QRGSaver();
-        //qrgSaver.save(savePath, edtValue.getText().toString().trim(), qrBitmap, QRGContents.ImageType.IMAGE_JPEG);
+//        QRGSaver qrgSaver = new QRGSaver();
+//        qrgSaver.save(destinationDir, fileName, qrBitmap, QRGContents.ImageType.IMAGE_JPEG);
+
+        // ----> content://media/external/images/media/380541
+        //String uriPath = MediaStore.Images.Media.insertImage(getContentResolver(), qrBitmap, fileName, null);
+        //Uri uri = Uri.parse(uriPath);
+        //shareImage(uri);
+
+        FileUtil.saveBitmapToFile(context, qrBitmap);
+        shareImage(file);
+    }
+
+    private void shareImage(File file) {
+        MediaScannerConnection.scanFile(context,
+                new String[]{file.getAbsolutePath()}, null,
+                new MediaScannerConnection.OnScanCompletedListener() {
+                    @Override
+                    public void onScanCompleted(String path, Uri uri) {
+                        customToast.showToast("QR successfully saved. " + file.getAbsolutePath(), CustomToast.ToastySuccess);
+                        Uri mUri;
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                            mUri = FileProvider.getUriForFile(context, getPackageName() + ".provider", file);
+                        } else {
+                            mUri = Uri.fromFile(file);
+                        }
+                        shareImage(mUri);
+                    }
+                });
+    }
+
+    private void shareImage(Uri uri) {
+        try {
+            Intent intent = new Intent(Intent.ACTION_SEND);
+            intent.setType(FileUtil.getMimeType(context, uri));
+            intent.putExtra(Intent.EXTRA_STREAM, uri);
+            startActivity(Intent.createChooser(intent, "Share QR Code"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 

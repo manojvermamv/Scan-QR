@@ -13,8 +13,11 @@
     <string name="back_camera">Back Camera</string>
     <string name="no_camera">There is no camera on this device</string>
     <string name="no_results">No results</string>
+    <string name="copy_text">Copy text</string>
+    <string name="go_to_website">Go to website</string>
     <string name="generate">Generate</string>
     <string name="qr_appear_desc">Your QR Code will appear here</string>
+    <string name="qr_code_details">QR Code Details</string>
     <string name="scan_any_qr">Scan Any QR Code</string>
     <string name="browse_from_gallery">Browse Image from Gallery</string>
 

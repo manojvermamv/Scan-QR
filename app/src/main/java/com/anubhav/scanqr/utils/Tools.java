@@ -328,26 +328,6 @@ public class Tools {
         return builder.toString();
     }
 
-
-    public static void rateAction(Activity activity) {
-        Uri uri = Uri.parse("market://details?id=" + activity.getPackageName());
-        Intent goToMarket = new Intent(Intent.ACTION_VIEW, uri);
-        try {
-            activity.startActivity(goToMarket);
-        } catch (ActivityNotFoundException e) {
-            activity.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://play.google.com/store/apps/details?id=" + activity.getPackageName())));
-        }
-    }
-
-    public static void directLinkToBrowser(Activity activity, String url) {
-        try {
-            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-            activity.startActivity(intent);
-        } catch (Exception e) {
-            Toast.makeText(activity, "Ops, Cannot open url", Toast.LENGTH_LONG).show();
-        }
-    }
-
     private static String appendQuery(String uri, String appendQuery) {
         try {
             URI oldUri = new URI(uri);
@@ -369,15 +349,6 @@ public class Tools {
         }
     }
 
-    public static void openInAppBrowser(Activity activity, String url, boolean from_notif) {
-        url = appendQuery(url, "t=" + System.currentTimeMillis());
-        if (!URLUtil.isValidUrl(url)) {
-            Toast.makeText(activity, "Ops, Cannot open url", Toast.LENGTH_LONG).show();
-            return;
-        }
-        //ActivityWebView.navigate(activity, url, from_notif);
-    }
-
     public static String getHostName(String url) {
         try {
             URI uri = new URI(url);
@@ -391,4 +362,5 @@ public class Tools {
             return url;
         }
     }
+
 }

@@ -9,6 +9,8 @@ import android.os.Build;
 import android.os.Environment;
 import android.util.Log;
 
+import com.anubhav.scanqr.R;
+
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -60,7 +62,7 @@ public class DownloadUtils {
             request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_MOBILE | DownloadManager.Request.NETWORK_WIFI);
             request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
 
-            String destinationDir = Environment.getExternalStorageDirectory() + File.separator + Environment.DIRECTORY_DOWNLOADS + "/SonikaPay/";
+            String destinationDir = Environment.getExternalStorageDirectory() + "/" + Environment.DIRECTORY_DOWNLOADS + "/" + context.getString(R.string.app_name) + "/";
             File mFile = new File(destinationDir, fileName);
             request.setDestinationUri(Uri.fromFile(mFile));
 

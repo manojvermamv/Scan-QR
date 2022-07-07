@@ -1,24 +1,23 @@
 package com.anubhav.scanqr;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
 
-import com.anubhav.scanqr.activities.ActivityBrowseGallery;
-
+import com.anubhav.commonutility.CustomToast;
 import com.anubhav.scanqr.databinding.ActQrScanBinding;
 import com.budiyev.android.codescanner.CodeScanner;
-import com.budiyev.android.codescanner.CodeScannerView;
 import com.budiyev.android.codescanner.DecodeCallback;
 import com.google.zxing.BinaryBitmap;
 import com.google.zxing.MultiFormatReader;
@@ -29,6 +28,9 @@ import com.google.zxing.common.HybridBinarizer;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+
+import gun0912.tedbottompicker.TedBottomPicker;
+import gun0912.tedbottompicker.TedBottomSheetDialogFragment;
 
 public class QrScanActivity extends BaseActivity<ActQrScanBinding> implements View.OnClickListener {
 
@@ -59,7 +61,6 @@ public class QrScanActivity extends BaseActivity<ActQrScanBinding> implements Vi
     private void onCreateAdminApp() {
         // action bar initialization
         binding.imgClose.setOnClickListener(view -> finish());
-
     }
 
     public void onResumeAdminApp() {
@@ -67,28 +68,14 @@ public class QrScanActivity extends BaseActivity<ActQrScanBinding> implements Vi
         mCodeScanner.setDecodeCallback(new DecodeCallback() {
             @Override
             public void onDecoded(@NonNull final Result result) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        customToast.showToast(result.getText());
-                    }
+                runOnUiThread(() -> {
+                    showScanResultDialog(result.getText());
                 });
             }
         });
 
-        binding.browseQrcode.setOnClickListener(view -> {
-            ActivityBrowseGallery.OpenBrowseActivity(context);
-            //mCodeScanner = ActivityBrowseProfileImage.imageUri;
-            //mCodeScanner.setImageURI(null);
-            //mCodeScanner.setImageURI(ActivityBrowseProfileImage.imageUri);
-        });
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 121) {
-        }
+        binding.scannerView.setOnClickListener(view -> mCodeScanner.startPreview());
+        binding.browseQrcode.setOnClickListener(view -> ScanImageFromGallery());
     }
 
     @Override
@@ -98,13 +85,13 @@ public class QrScanActivity extends BaseActivity<ActQrScanBinding> implements Vi
     @Override
     protected void onResume() {
         super.onResume();
-        if (ActivityBrowseGallery.imageUri != null) {
-            Result scanText = GetBarcodeText(ActivityBrowseGallery.imageUri);
-            customToast.showToast(scanText.getText());
-
-            ActivityBrowseGallery.imageUri = null;
-        }
         mCodeScanner.startPreview();
+    }
+
+    @Override
+    protected void onPause() {
+        mCodeScanner.releaseResources();
+        super.onPause();
     }
 
     protected Result GetBarcodeText(Uri imgUri) {
@@ -132,6 +119,29 @@ public class QrScanActivity extends BaseActivity<ActQrScanBinding> implements Vi
         } catch (FileNotFoundException e) {
             Log.e(TAG, "can not open file" + imgUri.toString(), e);
             return null;
+        }
+    }
+
+    public void ScanImageFromGallery() {
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q && ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            checkPermissions();
+        } else {
+            if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q && ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                checkPermissions();
+            } else {
+                TedBottomPicker.with(this)
+                        .show(new TedBottomSheetDialogFragment.OnImageSelectedListener() {
+                            @Override
+                            public void onImageSelected(Uri uri) {
+                                Result result = GetBarcodeText(uri);
+                                if (result == null) {
+                                    customToast.showToast("QR not found in image!", CustomToast.ToastyError);
+                                } else {
+                                    showScanResultDialog(result.getText());
+                                }
+                            }
+                        });
+            }
         }
     }
 

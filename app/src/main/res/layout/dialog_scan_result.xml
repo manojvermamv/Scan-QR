@@ -37,9 +37,11 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/five"
                 android:gravity="start"
-                android:maxLines="5"
+                android:maxLines="10"
+                android:scrollbars="vertical"
                 android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-                android:textColor="@color/black" />
+                android:textColor="@color/black"
+                android:textIsSelectable="true" />
 
         </LinearLayout>
 

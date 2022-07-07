@@ -2,6 +2,8 @@ package com.anubhav.scanqr;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
+import android.webkit.URLUtil;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -35,6 +38,7 @@ import com.anubhav.commonutility.customfont.FontUtils;
 import com.anubhav.scanqr.database.AppDatabase;
 import com.anubhav.scanqr.utils.Global;
 import com.anubhav.scanqr.utils.GlobalData;
+import com.anubhav.scanqr.utils.HelperMethod;
 import com.anubhav.scanqr.utils.PermissionsUtils;
 import com.manoj.github.permissions.PermissionHandler;
 import com.manoj.github.permissions.Permissions;
@@ -292,6 +296,41 @@ abstract public class BaseActivity<viewBinding extends ViewDataBinding> extends 
             checkPermissions();
         });
 
+        dialog.show();
+    }
+
+    public void showScanResultDialog(String msg) {
+        Dialog dialog = new Dialog(context, R.style.CustomDialogTheme);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCancelable(true);
+        dialog.setContentView(R.layout.dialog_scan_result);
+
+        TextView textTitle = (TextView) dialog.findViewById(R.id.dialog_title);
+        textTitle.setText(R.string.qr_code_details);
+        TextView textDesc = (TextView) dialog.findViewById(R.id.dialog_desc);
+        textDesc.setText(msg);
+
+        Button declineDialogButton = dialog.findViewById(R.id.bt_decline);
+        declineDialogButton.setOnClickListener(v -> dialog.dismiss());
+
+        Button confirmDialogButton = dialog.findViewById(R.id.bt_confirm);
+        if (URLUtil.isNetworkUrl(msg)) {
+            confirmDialogButton.setText(R.string.go_to_website);
+            confirmDialogButton.setOnClickListener(v -> {
+                dialog.dismiss();
+                GlobalData.openWebPage(context, msg);
+            });
+
+        } else {
+            confirmDialogButton.setText(R.string.copy_text);
+            confirmDialogButton.setOnClickListener(v -> {
+                dialog.dismiss();
+                ClipboardManager clipManager = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                ClipData clip = ClipData.newPlainText(getString(R.string.qr_code_details), msg);
+                clipManager.setPrimaryClip(clip);
+                customToast.showToast("Details Copied", CustomToast.ToastySuccess);
+            });
+        }
         dialog.show();
     }
 

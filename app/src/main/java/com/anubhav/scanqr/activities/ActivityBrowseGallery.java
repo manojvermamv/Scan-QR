@@ -14,6 +14,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -36,10 +37,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
 
+import com.anubhav.commonutility.MyCache;
 import com.anubhav.scanqr.utils.Global;
-import com.asksira.bsimagepicker.BSImagePicker;
-import com.asksira.bsimagepicker.Utils;
 import com.anubhav.commonutility.CustomToast;
 import com.anubhav.commonutility.customfont.FontUtils;
 import com.anubhav.scanqr.R;
@@ -57,8 +58,10 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 
-public class ActivityBrowseGallery extends AppCompatActivity implements View.OnClickListener,
-        BSImagePicker.OnSingleImageSelectedListener, UCropFragmentCallback {
+import gun0912.tedbottompicker.TedBottomPicker;
+import gun0912.tedbottompicker.TedBottomSheetDialogFragment;
+
+public class ActivityBrowseGallery extends AppCompatActivity implements View.OnClickListener, UCropFragmentCallback {
     private Context svContext;
     public static Uri imageUri = null;
     private TextView dialogCancel;
@@ -121,13 +124,12 @@ public class ActivityBrowseGallery extends AppCompatActivity implements View.OnC
                 browseImageFromGallery();
                 break;
             case R.id.dialog_fromcamera:
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN &&
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN && Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q &&
                         ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                     requestPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE, getString(R.string.permission_write_storage_rationale), REQUEST_STORAGE_WRITE_ACCESS_PERMISSION);
                 } else {
                     browseImageFromCamera();
                 }
-
                 break;
             case R.id.dialog_cancel:
 //                HideUploadDialog();
@@ -139,25 +141,26 @@ public class ActivityBrowseGallery extends AppCompatActivity implements View.OnC
     }
 
     public void browseImageFromGallery() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN
-                && ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN && Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q &&
+                ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             requestPermission(Manifest.permission.READ_EXTERNAL_STORAGE,
                     getString(R.string.permission_read_storage_rationale),
                     REQUEST_STORAGE_READ_ACCESS_PERMISSION);
         } else {
-            BSImagePicker pickerDialog = new BSImagePicker.Builder(svContext.getPackageName() + ".fileprovider")
-                    .setMaximumDisplayingImages(24) //Default: Integer.MAX_VALUE. Don't worry about performance :)
-                    .setSpanCount(3) //Default: 3. This is the number of columns
-                    .setGridSpacing(Utils.dp2px(2)) //Default: 2dp. Remember to pass in a value in pixel.
-                    .setPeekHeight(Utils.dp2px(360)) //Default: 360dp. This is the initial height of the dialog.
-                    .hideCameraTile() //Default: show. Set this if you don't want user to take photo.
-                    .hideGalleryTile() //Default: show. Set this if you don't want to further let user select from a gallery app. In such case, I suggest you to set maximum     displaying    images to Integer.MAX_VALUE.
-                    .setTag("A request ID") //Default: null. Set this if you need to identify which picker is calling back your fragment / activity.
-//                    .dismissOnSelect(true) //Default: true. Set this if you do not want the picker to dismiss right after selection. But then you will have to dismiss by yourself.
-//                    .useFrontCamera(true) //Default: false. Launching camera by intent has no reliable way to open front camera so this does not always work.
-                    .build();
-            pickerDialog.show(getSupportFragmentManager(), "picker");
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN && Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q &&
+                    ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                requestPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                        getString(R.string.permission_write_storage_rationale),
+                        REQUEST_STORAGE_WRITE_ACCESS_PERMISSION);
+            } else {
+                TedBottomPicker.with(this)
+                        .show(new TedBottomSheetDialogFragment.OnImageSelectedListener() {
+                            @Override
+                            public void onImageSelected(Uri uri) {
+                                startCrop(uri);
+                            }
+                        });
+            }
         }
     }
 
@@ -166,11 +169,15 @@ public class ActivityBrowseGallery extends AppCompatActivity implements View.OnC
             requestPermission(Manifest.permission.CAMERA, "Camera permission is needed to click images.", REQUEST_CAMERA_ACCESS_PERMISSION);
         } else {
             Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-                CustomFile customFile = FileUtil.getFileToSave(svContext, FileUtil.getFileName("jpg"), FileUtil.MediaType.Image);
-                imageUri = customFile.getUri();
-                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
-                startActivityForResult(takePictureIntent, TAKE_PICTURE);
+            try {
+                if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+                    //CustomFile customFile = FileUtil.getFileToSave(svContext, FileUtil.getFileName("jpg"), FileUtil.MediaType.Image);
+                    imageUri = MyCache.getInstance().getUriByFileName(FileUtil.getFileName("png"), svContext);
+                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+                    startActivityForResult(takePictureIntent, TAKE_PICTURE);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
     }
@@ -184,16 +191,18 @@ public class ActivityBrowseGallery extends AppCompatActivity implements View.OnC
     }
 
     private void startCrop(@NonNull Uri uri) {
-        String destinationFileName = SAMPLE_CROPPED_IMAGE_NAME + GlobalData.getUniqueString();
-        destinationFileName += ".jpg";
+        try {
+            String destinationFileName = SAMPLE_CROPPED_IMAGE_NAME + GlobalData.getUniqueString();
+            destinationFileName += ".jpg";
 
-        UCrop uCrop = UCrop.of(uri, Uri.fromFile(new File(getCacheDir(), destinationFileName)));
-
-        uCrop = basisConfig(uCrop);
-        uCrop = advancedConfig(uCrop);
-
-        uCrop.start(ActivityBrowseGallery.this);
-
+            UCrop uCrop = UCrop.of(uri, Uri.fromFile(new File(getCacheDir(), destinationFileName)));
+            uCrop = basisConfig(uCrop);
+            uCrop = advancedConfig(uCrop);
+            uCrop.start(ActivityBrowseGallery.this);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.e("startCrop", e.toString());
+        }
     }
 
     /**
@@ -346,11 +355,6 @@ public class ActivityBrowseGallery extends AppCompatActivity implements View.OnC
     }
 
     private String strPostText = "";
-
-    @Override
-    public void onSingleImageSelected(Uri uri, String tag) {
-        startCrop(uri);
-    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {

@@ -1,9 +1,13 @@
 package com.anubhav.scanqr;
 
+import android.content.ActivityNotFoundException;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.ContactsContract;
+
+import java.net.URL;
 
 public class BaseFunctions {
 

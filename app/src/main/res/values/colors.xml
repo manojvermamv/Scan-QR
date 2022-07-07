@@ -73,7 +73,7 @@
 
     <!--action bar colors-->
     <color name="fontcoloractionbar">@color/black</color>
-    <color name="actionbarimagetintcolor">@color/red_mgenda</color>
+    <color name="actionbarimagetintcolor">@color/black</color>
     <color name="backcoloractionbar">@color/white</color>
 
     <!--drawer bar colors-->

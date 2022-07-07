@@ -131,7 +131,6 @@ dependencies {
     implementation 'androidx.navigation:navigation-ui-ktx:2.4.1'
 
     // Firebase
-    implementation "androidx.browser:browser:1.4.0"
     implementation 'com.google.firebase:firebase-core:21.0.0'
     implementation 'com.google.firebase:firebase-crashlytics:18.2.1'
     implementation 'com.google.firebase:firebase-analytics:19.0.1'
@@ -139,28 +138,17 @@ dependencies {
 
     // UI & Widgets
     implementation 'com.scwang.wave:MultiWaveHeader:1.0.0-andx'
-    implementation 'com.baoyz.pullrefreshlayout:library:1.2.0'
     implementation 'com.github.f0ris.sweetalert:library:1.6.2'
     implementation "com.airbnb.android:lottie:3.7.2"
-    implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
     implementation 'com.loopeer.lib:shadow:0.0.4-beta3'
     implementation 'com.github.GrenderG:Toasty:1.5.2'
     implementation 'me.grantland:autofittextview:0.2.1'
     implementation 'com.asksira.android:webviewsuite:1.0.3'
-
     implementation 'com.github.denzcoskun:ImageSlideshow:0.1.0'
-    implementation 'com.makeramen:roundedimageview:2.3.0'
     implementation 'com.mikhaellopez:circularimageview:4.3.0'
 
     // Images Loading & Sever
-    implementation 'androidx.browser:browser:1.4.0'
     implementation 'com.google.code.gson:gson:2.8.6'
-    implementation 'org.nanohttpd:nanohttpd:2.2.0'
-    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
-    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
-    implementation 'com.squareup.okhttp3:logging-interceptor:3.10.0'
-    implementation 'com.squareup.retrofit2:converter-scalars:2.5.0'
-    implementation 'com.squareup.retrofit2:adapter-rxjava2:2.4.0'
     implementation 'com.github.bumptech.glide:glide:4.11.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
 
@@ -174,7 +162,6 @@ dependencies {
     implementation 'com.h6ah4i.android.widget.advrecyclerview:advrecyclerview:1.0.0'
 
     // ImagePicker, UCrop, Permissions
-    implementation 'com.asksira.android:bsimagepicker:1.3.2'
     implementation 'gun0912.ted:tedbottompicker:2.0.1'
     implementation 'com.github.krokyze:ucropnedit:2.2.6'
 
