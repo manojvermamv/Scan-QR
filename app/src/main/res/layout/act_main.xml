@@ -81,11 +81,11 @@
 
                                     <ImageView
                                         android:id="@+id/btn_clearqr"
-                                        android:layout_width="25dp"
-                                        android:layout_height="25dp"
+                                        android:layout_width="30dp"
+                                        android:layout_height="30dp"
                                         android:layout_alignEnd="@+id/lay_generated_qr"
                                         android:layout_alignBottom="@+id/lay_generated_qr"
-                                        android:layout_margin="6dp"
+                                        android:padding="5dp"
                                         android:src="@drawable/ic_remove" />
 
                                 </RelativeLayout>

@@ -69,6 +69,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
+import androidmads.library.qrgenearator.QRGContents;
+
 public class FileUtil {
 
     private Context context;
@@ -872,7 +874,6 @@ public class FileUtil {
                 }
             } else if (isDownloadsDocument(uri)) {
                 final String id = DocumentsContract.getDocumentId(uri);
-
                 if (!TextUtils.isEmpty(id)) {
                     if (id.startsWith("raw:")) {
                         return id.replaceFirst("raw:", "");
@@ -905,6 +906,10 @@ public class FileUtil {
                 path = getDataColumn(context, contentUri, selection, selectionArgs);
             }
         } else if (ContentResolver.SCHEME_CONTENT.equalsIgnoreCase(uri.getScheme())) {
+            if (isGooglePhotosUri(uri)) {
+                return uri.getLastPathSegment();
+            }
+
             path = getDataColumn(context, uri, null, null);
         } else if (ContentResolver.SCHEME_FILE.equalsIgnoreCase(uri.getScheme())) {
             path = uri.getPath();
@@ -935,7 +940,7 @@ public class FileUtil {
                 return cursor.getString(column_index);
             }
         } catch (Exception e) {
-
+            e.printStackTrace();
         } finally {
             if (cursor != null) {
                 cursor.close();
@@ -954,6 +959,10 @@ public class FileUtil {
 
     private static boolean isMediaDocument(Uri uri) {
         return "com.android.providers.media.documents".equals(uri.getAuthority());
+    }
+
+    public static boolean isGooglePhotosUri(Uri uri) {
+        return "com.google.android.apps.photos.content".equals(uri.getAuthority());
     }
 
     public static String encodeImage(Uri imgUri) {
@@ -976,44 +985,64 @@ public class FileUtil {
         return BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
     }
 
-    public static String saveBitmapToFile(Context context, Bitmap bitmap) {
-        String savedFilePath = "";
+    public static Comparable<? extends Comparable<? extends Comparable<?>>> bitmapCompressFormat(ImageType imageType) {
+        return imageType == ImageType.PNG ? Bitmap.CompressFormat.PNG :
+                (imageType == ImageType.WEBP ? Bitmap.CompressFormat.WEBP : Bitmap.CompressFormat.JPEG);
+    }
+
+    public static String imgFormat(ImageType imageType) {
+        return imageType == ImageType.PNG ? ".png" :
+                (imageType == ImageType.WEBP ? ".webp" : ".jpg");
+    }
+
+    public static CustomFile saveBitmapToFile(Context context, Bitmap bitmap) {
+        return saveBitmapToFile(context, bitmap, getFileName(null), ImageType.PNG);
+    }
+
+    public static CustomFile saveBitmapToFile(Context context, Bitmap bitmap, String fileName, ImageType imageType) {
+        CustomFile customFile = null;
         try {
             Uri finalUri;
             ContentResolver resolver = context.getContentResolver();
-            String fileName = getFileName("jpg");
+
+            String appDir = context.getResources().getString(R.string.app_name) + "/";
+            String finalFileName = fileName + imgFormat(imageType);
 
             ContentValues values = new ContentValues();
-            values.put(MediaStore.Images.Media.DISPLAY_NAME, fileName);
-            values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpg");
+            values.put(MediaStore.Images.Media.DISPLAY_NAME, finalFileName);
+            values.put(MediaStore.Images.Media.MIME_TYPE, getMimeType(finalFileName));
 
             // if targeting API 29 and upper than custom dir not allowed! you must use default storage dirs
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                values.put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_PICTURES + "/" + getAppDir(context));
-                values.put(MediaStore.Images.Media.IS_PENDING, 0);
-
-                savedFilePath = Environment.DIRECTORY_PICTURES + "/" + getAppDir(context) + fileName;
+                values.put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_PICTURES + "/" + appDir);
+                values.put(MediaStore.Images.Media.IS_PENDING, 1);
             } else {
-                File createDir = new File(Environment.getExternalStorageDirectory(), getAppDir(context));
+                File createDir = new File(Environment.getExternalStorageDirectory(), appDir);
                 if (!createDir.exists()) {
                     createDir.mkdirs();
                 }
 
-                File savedFile = new File(createDir, fileName);
-                savedFilePath = savedFile.getAbsolutePath();
-                values.put(MediaStore.MediaColumns.DATA, savedFilePath);
+                File savedFile = new File(createDir, finalFileName);
+                values.put(MediaStore.MediaColumns.DATA, savedFile.getAbsolutePath());
             }
 
             finalUri = resolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
             try (OutputStream output = resolver.openOutputStream(finalUri)) {
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, output);
-                CustomToast.showCustomToast(context, "Saved! " + savedFilePath, CustomToast.ToastySuccess);
+                bitmap.compress((Bitmap.CompressFormat) bitmapCompressFormat(imageType), 100, output);
             }
+
+            values.clear();
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                values.put(MediaStore.Video.Media.IS_PENDING, 0);
+            }
+            resolver.update(finalUri, values, null, null);
+
+            String savedFilePath = convertUriToFilePath(context, finalUri);
+            customFile = new CustomFile(savedFilePath, finalUri);
         } catch (Exception e) {
             Log.d(TAG, e.toString());
-            CustomToast.showCustomToast(context, e.toString(), CustomToast.ToastyError);
         }
-        return savedFilePath;
+        return customFile;
     }
 
     public static void saveBitmapToFile(Bitmap bitmap, String destPath) {
@@ -1534,6 +1563,10 @@ public class FileUtil {
 
     public enum MediaType {
         None, Image, Video, Audio, Apk, Other
+    }
+
+    public enum ImageType {
+        JPG, PNG, WEBP
     }
 
 }

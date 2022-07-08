@@ -30,6 +30,7 @@ import androidx.core.view.GravityCompat;
 import com.anubhav.commonutility.CustomToast;
 import com.anubhav.commonutility.MyCache;
 import com.anubhav.commonutility.customfont.FontUtils;
+import com.anubhav.scanqr.database.model.CustomFile;
 import com.anubhav.scanqr.databinding.ActMainBinding;
 import com.anubhav.scanqr.utils.FileUtil;
 import com.anubhav.scanqr.utils.GlobalData;
@@ -230,41 +231,18 @@ public class MainActivity extends BaseActivity<ActMainBinding> implements View.O
      */
     private void ShareQrProcess() {
         if (qrBitmap == null) {
-            customToast.showToast("First generate qr to share!", CustomToast.ToastyError);
+            customToast.showToast("Generate QR for sharing", CustomToast.ToastyError);
             return;
         }
 
-        String fileName = FileUtil.getFileName("jpg");
-        String destinationDir = Environment.getExternalStorageDirectory() + "/" + Environment.DIRECTORY_PICTURES + "/" + context.getString(R.string.app_name) + "/";
-        File file = new File(destinationDir, fileName);
-
-        // Save with location, value, bitmap returned and type of Image(JPG/PNG).
-//        QRGSaver qrgSaver = new QRGSaver();
-//        qrgSaver.save(destinationDir, fileName, qrBitmap, QRGContents.ImageType.IMAGE_JPEG);
-
-        // ----> content://media/external/images/media/380541
-        //String uriPath = MediaStore.Images.Media.insertImage(getContentResolver(), qrBitmap, fileName, null);
-        //Uri uri = Uri.parse(uriPath);
-        //shareImage(uri);
-
-        FileUtil.saveBitmapToFile(context, qrBitmap);
-        shareImage(file);
-    }
-
-    private void shareImage(File file) {
+        CustomFile customFile = FileUtil.saveBitmapToFile(context, qrBitmap);
         MediaScannerConnection.scanFile(context,
-                new String[]{file.getAbsolutePath()}, null,
+                new String[]{customFile.getPath()}, null,
                 new MediaScannerConnection.OnScanCompletedListener() {
                     @Override
                     public void onScanCompleted(String path, Uri uri) {
-                        customToast.showToast("QR successfully saved. " + file.getAbsolutePath(), CustomToast.ToastySuccess);
-                        Uri mUri;
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                            mUri = FileProvider.getUriForFile(context, getPackageName() + ".provider", file);
-                        } else {
-                            mUri = Uri.fromFile(file);
-                        }
-                        shareImage(mUri);
+                        customToast.showToast("QR successfully saved. " + customFile.getPath(), CustomToast.ToastySuccess);
+                        shareImage(customFile.getUri());
                     }
                 });
     }
@@ -279,7 +257,6 @@ public class MainActivity extends BaseActivity<ActMainBinding> implements View.O
             e.printStackTrace();
         }
     }
-
 
     private int getSmallerDimen() {
         WindowManager manager = (WindowManager) getSystemService(WINDOW_SERVICE);

@@ -15,6 +15,7 @@ public class CustomFile {
     private File file;
     private String path;
     private Uri uri;
+
     private String fileSize;
 
     /**
@@ -64,15 +65,6 @@ public class CustomFile {
 
     public void setFileSize(String fileSize) {
         this.fileSize = fileSize;
-    }
-
-    @Override
-    public String toString() {
-        return getUri().toString() + " " + getPath() + " " + getFile();
-    }
-
-    public void print() {
-        Log.e(CustomFile.class.getSimpleName(), uri.toString() + " " + path + " " + file);
     }
 
 }

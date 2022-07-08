@@ -5,10 +5,6 @@
         name="shared_images"
         path="images/" />
 
-    <!--    <external-path-->
-    <!--        name="files_root"-->
-    <!--        path="Android/data/${applicationId}" />-->
-
     <external-path
         name="external"
         path="." />
