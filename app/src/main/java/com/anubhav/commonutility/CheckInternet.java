@@ -75,7 +75,7 @@ public class CheckInternet {
                 .setTitleText(getStringRes(R.string.no_internet_title))
                 .setContentText(getStringRes(R.string.internet_msg))
                 .setContentTextSize(16)
-                .setCustomImage(R.mipmap.ic_launcher)
+                .setCustomImage(R.drawable.app_logo)
                 .setConfirmButtonTextColor(ContextCompat.getColor(activity, R.color.white))
                 .setConfirmButtonBackgroundColor(ContextCompat.getColor(activity, R.color.green_300))
                 .setCancelButtonTextColor(ContextCompat.getColor(activity, R.color.white))

@@ -44,7 +44,7 @@
                 android:textColor="@color/fontcolortextview"
                 android:textSize="@dimen/ts_thirty"
                 android:textStyle="bold"
-                android:visibility="gone" />
+                android:visibility="visible" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -73,7 +73,7 @@
                 android:layout_marginBottom="@dimen/twenty"
                 android:gravity="center"
                 android:orientation="horizontal"
-                android:src="@mipmap/ic_launcher"
+                android:src="@drawable/app_logo"
                 android:visibility="gone">
 
                 <TextView

@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Point;
+import android.graphics.Typeface;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Build;
@@ -30,13 +31,21 @@ import androidx.core.view.GravityCompat;
 import com.anubhav.commonutility.CustomToast;
 import com.anubhav.commonutility.MyCache;
 import com.anubhav.commonutility.customfont.FontUtils;
+import com.anubhav.commonutility.screenshot.ScreenshotUtil;
 import com.anubhav.scanqr.database.model.CustomFile;
 import com.anubhav.scanqr.databinding.ActMainBinding;
 import com.anubhav.scanqr.utils.FileUtil;
+import com.anubhav.scanqr.utils.Global;
 import com.anubhav.scanqr.utils.GlobalData;
 import com.anubhav.scanqr.utils.Utils;
 import com.google.android.material.navigation.NavigationView;
+import com.google.android.play.core.review.ReviewInfo;
+import com.google.android.play.core.review.ReviewManager;
+import com.google.android.play.core.review.ReviewManagerFactory;
+import com.google.android.play.core.tasks.Task;
 import com.manoj.github.permissions.PermissionHandler;
+import com.sanojpunchihewa.updatemanager.UpdateManager;
+import com.sanojpunchihewa.updatemanager.UpdateManagerConstant;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -49,11 +58,14 @@ public class MainActivity extends BaseActivity<ActMainBinding> implements View.O
 
     private static final String TAG = MainActivity.class.getSimpleName();
     private Bitmap qrBitmap;
+    private ReviewManager reviewManager;
+    private UpdateManager updateManager;
 
     public static void start(Context context) {
         Intent intent = new Intent(context, MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         context.startActivity(intent);
+        ((Activity) context).overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
         ((Activity) context).finishAffinity();
     }
 
@@ -93,6 +105,9 @@ public class MainActivity extends BaseActivity<ActMainBinding> implements View.O
         View navigationHeader = binding.navView.getHeaderView(0);
         FontUtils.setFont(context, (ViewGroup) navigationHeader);
 
+        reviewManager = ReviewManagerFactory.create(this);
+        updateManager = UpdateManager.Builder(this).mode(UpdateManagerConstant.FLEXIBLE);
+
         binding.edtext.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -118,6 +133,9 @@ public class MainActivity extends BaseActivity<ActMainBinding> implements View.O
         binding.btnClearqr.setOnClickListener(v -> SetQrToImageView(null));
 
         SetQrToImageView(null);
+
+        // Call start() to check for updates and install them
+        updateManager.start();
     }
 
     @Override
@@ -129,7 +147,8 @@ public class MainActivity extends BaseActivity<ActMainBinding> implements View.O
         } else if (id == R.id.nav_other_apps) {
             GlobalData.openAppStoreDeveloper(context);
         } else if (id == R.id.nav_rate_app) {
-            GlobalData.openAppStore(context);
+            showRateApp();
+            //GlobalData.openAppStore(context);
         } else if (id == R.id.nav_about) {
             GlobalData.openAppStoreDeveloper(context);
         }
@@ -278,6 +297,25 @@ public class MainActivity extends BaseActivity<ActMainBinding> implements View.O
         int dimen = Math.min(width, height);
         dimen = dimen * 3 / 4;
         return dimen;
+    }
+
+    // Shows the app rate dialog box using In-App review API
+    // The app rate dialog box might or might not shown depending
+    // on the Quotas and limitations
+    public void showRateApp() {
+        Task<ReviewInfo> request = reviewManager.requestReviewFlow();
+        request.addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                // Getting the ReviewInfo object
+                ReviewInfo reviewInfo = task.getResult();
+
+                Task<Void> flow = reviewManager.launchReviewFlow(this, reviewInfo);
+                flow.addOnCompleteListener(task1 -> {
+                    // The flow has finished. The API does not indicate whether the user
+                    // reviewed or not, or even whether the review dialog was shown.
+                });
+            }
+        });
     }
 
 }

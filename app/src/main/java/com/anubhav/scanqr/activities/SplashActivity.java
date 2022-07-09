@@ -1,73 +1,39 @@
 package com.anubhav.scanqr.activities;
 
-import static com.anubhav.scanqr.utils.ViewUtils.hideKeyboard;
-
-import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.animation.AnimationUtils;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.databinding.DataBindingUtil;
 
 import com.anubhav.scanqr.MainActivity;
-import com.anubhav.commonutility.CustomToast;
-import com.anubhav.commonutility.customtheme.ThemeUtils;
 import com.anubhav.scanqr.R;
-import com.anubhav.scanqr.databinding.ActSplashBinding;
-import com.anubhav.scanqr.utils.GlobalData;
 
-public class SplashActivity extends AppCompatActivity implements View.OnClickListener {
-
-    private Context context;
-    private CustomToast customToast;
-    private ActSplashBinding binding;
+public class SplashActivity extends AppCompatActivity {
 
     public static final String TAG = SplashActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = DataBindingUtil.setContentView(this, R.layout.act_splash);
-        GlobalData.setStatusBarFullScreen(this);
-        GlobalData.setLightStatusBar(this);
+        //ActSplashBinding binding = DataBindingUtil.setContentView(this, R.layout.act_splash);
+        //GlobalData.setStatusBarFullScreen(this);
+        //GlobalData.setLightStatusBar(this);
 
-        StartApp();
-        resumeApp();
-    }
-
-    private void StartApp() {
-        context = this;
-        customToast = new CustomToast(context);
-        ThemeUtils.setThemeFont(this, (ViewGroup) binding.rootView);
-
-        hideKeyboard(this);
-        GlobalData.SetLanguage(context);
-    }
-
-    private void resumeApp() {
-        binding.progressbar.setVisibility(View.VISIBLE);
-        binding.tvName.startAnimation(AnimationUtils.loadAnimation(context, R.anim.shake));
+        //ThemeUtils.setThemeFont(this, (ViewGroup) binding.rootView);
+        //GlobalData.SetLanguage(this);
+        //binding.progressbar.setVisibility(View.VISIBLE);
+        //binding.tvName.startAnimation(AnimationUtils.loadAnimation(this, R.anim.shake));
 
         new Handler().postDelayed(() -> {
-            binding.progressbar.setVisibility(View.INVISIBLE);
-            MainActivity.start(context);
-        }, 1000);
-    }
+            //binding.progressbar.setVisibility(View.INVISIBLE);
+            //MainActivity.start(this);
 
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            default:
-                break;
-        }
-    }
+            startActivity(new Intent(this, MainActivity.class));
+            overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+            finish();
+        }, 200);
 
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
     }
 
 }
