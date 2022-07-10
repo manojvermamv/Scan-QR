@@ -16,7 +16,6 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.anubhav.scanqr.base.MyDiffUtil;
 import com.anubhav.scanqr.interfaces.ItemClickListener;
 import com.anubhav.scanqr.utils.GlobalData;
 import com.anubhav.scanqr.utils.ItemAnimation;
@@ -28,7 +27,7 @@ import java.util.List;
 /**
  * Created by Manoj Verma on 26/3/2022.
  */
-public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter<BaseRecyclerAdapter.ViewHolder<T>> implements Filterable, MyDiffUtil.Callback<T> {
+public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter<BaseRecyclerAdapter.ViewHolder<T>> implements Filterable {
 
     private final String TAG = BaseRecyclerAdapter.class.getSimpleName();
     private final Context context;
@@ -114,17 +113,6 @@ public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter<BaseRe
                 //updateDataList(GlobalData.castList(results.values, tClass));
             }
         };
-    }
-
-    public final void updateDataList(List<T> newDataList) {
-        Log.d(TAG, "updateDataList : " + newDataList.size());
-        DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new MyDiffUtil<>(dataList, newDataList, this, tClass));
-        diffResult.dispatchUpdatesTo(this);
-
-        dataList.clear();
-        dataListFilter.clear();
-        dataList.addAll(newDataList);
-        dataListFilter.addAll(newDataList);
     }
 
     public final Context getContext() {

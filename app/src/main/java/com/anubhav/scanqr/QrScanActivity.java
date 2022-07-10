@@ -52,18 +52,18 @@ public class QrScanActivity extends BaseActivity<ActQrScanBinding> implements Vi
         //GlobalData.setStatusBarFullScreen(this);
         //GlobalData.setLightStatusBar(this);
 
-        onCreateAdminApp();
-        onResumeAdminApp();
+        onCreateApp();
+        onResumeApp();
     }
 
     private CodeScanner mCodeScanner;
 
-    private void onCreateAdminApp() {
+    private void onCreateApp() {
         // action bar initialization
         binding.imgClose.setOnClickListener(view -> finish());
     }
 
-    public void onResumeAdminApp() {
+    public void onResumeApp() {
         mCodeScanner = new CodeScanner(this, binding.scannerView);
         mCodeScanner.setDecodeCallback(new DecodeCallback() {
             @Override

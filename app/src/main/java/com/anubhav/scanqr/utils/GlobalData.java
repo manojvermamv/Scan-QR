@@ -169,8 +169,7 @@ public class GlobalData {
     }
 
     public static void openAppStoreDeveloper(Context context) {
-        String devId = "7809285959465313029";
-        Uri uri = Uri.parse("https://play.google.com/store/apps/dev?id=" + devId);
+        Uri uri = Uri.parse("https://play.google.com/store/apps/dev?id=" + Global.DEVELOPER_ID);
         Intent intent = new Intent(Intent.ACTION_VIEW, uri);
         context.startActivity(intent);
     }

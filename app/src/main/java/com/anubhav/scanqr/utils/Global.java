@@ -26,6 +26,7 @@ public class Global {
     public static final boolean ISTESTING = true;
 
     // default app config
+    public static String DEVELOPER_ID = "8256627302674614518";
     public static String PRE_URL_MAIN = "https://www.trackxadmin.com/";
     public static String PRE_URL = PRE_URL_MAIN + "api/authController/";
 

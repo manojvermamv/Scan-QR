@@ -42,9 +42,6 @@ import com.anubhav.scanqr.utils.HelperMethod;
 import com.anubhav.scanqr.utils.PermissionsUtils;
 import com.manoj.github.permissions.PermissionHandler;
 import com.manoj.github.permissions.Permissions;
-import com.scwang.wave.MultiWaveHeader;
-
-import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -62,15 +59,6 @@ abstract public class BaseActivity<viewBinding extends ViewDataBinding> extends 
     public AppDatabase appDatabase;
 
     protected viewBinding binding;
-    private boolean isBusEventEnabled = false;
-
-    public void setBusEventEnabled(boolean enabled) {
-        this.isBusEventEnabled = enabled;
-    }
-
-    public boolean getIsBusEventEnabled() {
-        return isBusEventEnabled;
-    }
 
     @LayoutRes
     protected abstract int getLayoutResourceId();
@@ -89,33 +77,16 @@ abstract public class BaseActivity<viewBinding extends ViewDataBinding> extends 
         StartApp();
         resumeApp();
         checkPermissions();
-        if (isBusEventEnabled) {
-            EventBus.getDefault().register(this);
-        }
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        if (isBusEventEnabled && !EventBus.getDefault().isRegistered(this)) {
-            EventBus.getDefault().register(this);
-        }
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        if (isBusEventEnabled && EventBus.getDefault().isRegistered(this)) {
-            EventBus.getDefault().unregister(this);
-        }
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (isBusEventEnabled && EventBus.getDefault().isRegistered(this)) {
-            EventBus.getDefault().unregister(this);
-        }
     }
 
     @Override
@@ -150,30 +121,6 @@ abstract public class BaseActivity<viewBinding extends ViewDataBinding> extends 
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-    }
-
-    public void setWaveAnimation(MultiWaveHeader waveHeader) {
-        waveHeader.setStartColor(R.color.mwhStartColor);
-        waveHeader.setCloseColor(R.color.mwhCloseColor);
-        waveHeader.setColorAlpha(.5f);
-        waveHeader.setWaveHeight(50);
-        waveHeader.setGradientAngle(360);
-        waveHeader.setProgress(.8f);
-        waveHeader.setVelocity(1f);
-        waveHeader.setScaleY(-1f);
-        waveHeader.setWaves("MultiWave");
-
-        waveHeader.start();
-
-        Log.e(TAG, "Angle : " + "Start");
-        Runnable runnable = () -> {
-            Random rand = new Random(System.currentTimeMillis());
-            int angle = rand.nextInt() % 360;
-            Log.e(TAG, "Angle : " + angle);
-            waveHeader.setGradientAngle(angle);
-        };
-        AppExecutors.getInstance().scheduleAtFixedRate(runnable, 1000, 60 * 1000);
-
     }
 
     public static void startActivity(Context context, Class<?> cls) {
