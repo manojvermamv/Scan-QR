@@ -9,9 +9,6 @@ import android.content.Intent;
 import androidx.annotation.NonNull;
 import androidx.multidex.MultiDex;
 
-import com.google.firebase.FirebaseApp;
-import com.google.firebase.FirebaseOptions;
-
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
@@ -56,26 +53,6 @@ public class MyApp extends Application {
         appContext = this;
         packageName = getPackageName();
         appName = getString(R.string.app_name);
-
-        initFirebaseApp();
-    }
-
-    private static final String PROJECT_ID = "trackx-8ffac";
-    private static final String API_KEY = "AIzaSyCu0Rnzud5yyIpDqrwKbYABMt42ScYO9lQ";
-    private static final String DATABASE_URL = "https://trackx-8ffac-default-rtdb.firebaseio.com";
-    private static final String STORAGE_BUCKET = "trackx-8ffac.appspot.com";
-    private static final String APP_ID = "1:757024137844:android:ecb3eb797bc23ab57b2721";
-    private static final String WEB_CLIENT_ID = "757024137844-ob6phrr8g8kppqsfkafl136uh43mvhr4.apps.googleusercontent.com";
-
-    private void initFirebaseApp() {
-        FirebaseOptions.Builder optionsBuilder = new FirebaseOptions.Builder()
-                .setProjectId(PROJECT_ID)
-                .setApiKey(API_KEY)
-                .setStorageBucket(STORAGE_BUCKET)
-                .setDatabaseUrl(DATABASE_URL)
-                .setApplicationId(APP_ID);
-
-        FirebaseApp.initializeApp(getApplicationContext(), optionsBuilder.build());
     }
 
     private String getStackTrace(Throwable th) {
