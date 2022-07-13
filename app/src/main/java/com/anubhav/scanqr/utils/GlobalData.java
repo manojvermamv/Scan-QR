@@ -9,13 +9,11 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Point;
-import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
-import android.util.Log;
 import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -30,8 +28,6 @@ import androidx.annotation.DrawableRes;
 import androidx.core.content.ContextCompat;
 
 import com.anubhav.commonutility.LocaleHelper;
-import com.anubhav.commonutility.screenshot.ScreenshotUtil;
-import com.anubhav.commonutility.spinner.SpinnerModel;
 import com.anubhav.scanqr.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -194,53 +190,12 @@ public class GlobalData {
         }
     }
 
-    public static int getApiVersion() {
-        return Build.VERSION.SDK_INT; // e.g. sdkVersion := 8;
-    }
-
-    public String getDeviceVersion() {
-        return Build.VERSION.RELEASE; // e.g. myVersion := "1.6"
-    }
-
-    public String getDeviceVersionName() {
-        // Names taken from android.os.build.VERSION_CODES
-        String[] mapper = new String[]{
-                "ANDROID_BASE", "ANDROID_BASE1.1", "CUPCAKE", "DONUT",
-                "ECLAIR", "ECLAIR_0_1", "ECLAIR_MR1", "FROYO", "GINGERBREAD",
-                "GINGERBREAD_MR1", "HONEYCOMB", "HONEYCOMB_MR1", "HONEYCOMB_MR2",
-                "ICE_CREAM_SANDWICH", "ICE_CREAM_SANDWICH_MR1", "JELLY_BEAN", "JELLY_BEAN_MR1", "JELLY_BEAN_MR2",
-                "KITKAT", "LOLLYPOP"
-        };
-        int index = Build.VERSION.SDK_INT - 1;
-        String versionName = index < mapper.length ? mapper[index] : "UNKNOWN_VERSION"; // > KITKAT)
-        return versionName;
-    }
-
     public static double roundUp(double value, int roundAfterDecimal) {
         BigDecimal totaalAmt = new BigDecimal(value);
         BigDecimal strtotaalAmt = totaalAmt.setScale(roundAfterDecimal, RoundingMode.HALF_UP);
         double roundedValue = Double.parseDouble(String.valueOf(strtotaalAmt));
         return roundedValue;
     }
-
-//    public static String getDeviceId(Context mContext) {
-//        final TelephonyManager tm = (TelephonyManager) mContext.getSystemService(Context.TELEPHONY_SERVICE);
-//        final String tmDevice, tmSerial, androidId;
-//        tmDevice = "" + tm.getDeviceId();
-//        tmSerial = "" + tm.getSimSerialNumber();
-//        androidId = "" + android.provider.Settings.Secure.getString(mContext.getContentResolver(), android.provider.Settings.Secure.ANDROID_ID);
-//
-//        UUID deviceUuid = new UUID(androidId.hashCode(), ((long) tmDevice.hashCode() << 32) | tmSerial.hashCode());
-//        String deviceId = deviceUuid.toString();
-//
-//        return deviceId;
-//    }
-
-//    public static String getIMEINumber(Context mContext) {
-//        TelephonyManager tm = (TelephonyManager) mContext.getSystemService(Context.TELEPHONY_SERVICE);
-//        return tm.getDeviceId();
-//    }
-
 
 //    public static void setFont(ViewGroup group, Typeface font) {
 //        int count = group.getChildCount();
@@ -343,45 +298,6 @@ public class GlobalData {
         return hexColor;
     }
 
-    public static int getSpinnerPosByValue(List<String> spinnerItem, String myString) {
-        int index = 0;
-        for (int i = 0; i < spinnerItem.size(); i++) {
-            System.out.println(spinnerItem.get(i) + "....spinner pos....." + myString);
-            // For compare with id write [0] and for value write [1]
-            if (spinnerItem.get(i).trim().equalsIgnoreCase(myString.trim())) {
-                index = i;
-                break;
-            }
-        }
-        return index;
-    }
-
-    public static String getSpinnerTitleByValue(List<SpinnerModel> spinnerItem, String myString) {
-        String str = "";
-        for (int i = 0; i < spinnerItem.size(); i++) {
-            System.out.println(spinnerItem.get(i) + "........." + myString);
-            // For compare with id write [0] and for value write [1]
-            if ((spinnerItem.get(i).getId().trim().equals(myString.trim()))) {
-                str = spinnerItem.get(i).getTitle().trim();
-                break;
-            }
-        }
-        return str;
-    }
-
-    public static String getSpinnerImageUrlByValue(List<SpinnerModel> spinnerItem, String myString) {
-        String str = "";
-        for (int i = 0; i < spinnerItem.size(); i++) {
-            System.out.println(spinnerItem.get(i) + "........." + myString);
-            // For compare with id write [0] and for value write [1]
-            if ((spinnerItem.get(i).getId().trim().equals(myString.trim()))) {
-                str = spinnerItem.get(i).getStrImgUrl();
-                break;
-            }
-        }
-        return str;
-    }
-
     public static boolean deleteDirectory(File path) {
         if (path.exists()) {
             File[] files = path.listFiles();
@@ -397,17 +313,6 @@ public class GlobalData {
             }
         }
         return (path.delete());
-    }
-
-    public static String getDeviceType(Context context) {
-        //		System.out.println("Quick Mobi Indfo "
-        //				+ android.os.Build.VERSION.RELEASE + "  "
-        //				+ android.os.Build.MODEL);
-        return Build.MODEL;
-    }
-
-    public static String getOsVersion(Context context) {
-        return Build.VERSION.RELEASE;
     }
 
     public static void SaveStringInFile(Context svContext, final String fileData, String fileName) throws IOException {
